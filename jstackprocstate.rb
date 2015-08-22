@@ -8,8 +8,8 @@ myPid = ARGV[0]
 myInterval = ARGV[1]
 
 def jstackprocstate(jPid)
-  Open3.pipeline_rw("grep JVM", "awk '{print $2}'", "sort","uniq -c") {|i, o, ts|
-    i.puts %x{sudo jstack -m #{jPid}}
+  Open3.pipeline_rw("grep Thread.State", "awk '{print $2}'", "sort","uniq -c") {|i, o, ts|
+    i.puts %x{/usr/bin/jstack -l #{jPid}}
     i.close
     puts o.read
   }
@@ -33,4 +33,8 @@ loop do
 end
 
 #usage
-#ruby rf2.rb 11386 2
+#ruby jstackprocstate.rb 11386 2
+
+#ref.:
+#http://ruby-doc.org/stdlib-2.1.0/libdoc/open3/rdoc/Open3.html
+#http://docs.oracle.com/javase/7/docs/technotes/tools/share/jstack.html
